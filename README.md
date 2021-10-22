@@ -40,7 +40,7 @@ E-library
 |login| VARCHAR(50)| NOT NULL |
 |password| VARCHAR(50)| NOT NULL|
 |name| VARCHAR(50)| NOT NULL|
-|age| INT| NOT NULL|
+|birth_date| DATE| NOT NULL|
 |about| TEXT|
 |total_rented| INT |NOT NULL CHECK(total_rented <= 3)|
 |is_author| BOOL| NOT NULL|
