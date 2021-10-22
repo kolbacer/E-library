@@ -25,7 +25,8 @@ E-library
 |genre| VARCHAR(50)| NOT NULL|
 |publisher| VARCHAR(50)|
 |publication_date| DATE| NOT NULL|
-|rating| INT|
+|number_of_ratings| INT|
+|sum_of_ratings| INT|
 |age_rating |INT|
 |language| VARCHAR(50)| NOT NULL|
 |description |TEXT|
@@ -33,6 +34,11 @@ E-library
 |file_format| VARCHAR(50)| NOT NULL|
 |download_link| VARCHAR(150)| 
 |approved |BOOL| NOT NULL|
+
+- `number_of_ratings` - кол-во оценок
+- `sum_of_ratings` - сумма оценок
+
+рейтинг книги считается, как sum_of_ratings / number_of_ratings
 ### user
 |name|type|constraints|
 |---|---|---|
@@ -42,7 +48,6 @@ E-library
 |name| VARCHAR(50)| NOT NULL|
 |birth_date| DATE| NOT NULL|
 |about| TEXT|
-|total_rented| INT |NOT NULL CHECK(total_rented <= 3)|
 |is_author| BOOL| NOT NULL|
 |is_moder| BOOL| NOT NULL|
 
