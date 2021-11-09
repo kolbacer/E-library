@@ -16,6 +16,7 @@ E-library
 ## Предметная область
 читатели, книги, авторы
 # Данные
+![er diagram](https://github.com/kolbacer/E-library/blob/main/E-library.png)
 ### book
 |name|type|constraints|
 |---|---|---|
