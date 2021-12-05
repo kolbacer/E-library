@@ -1,0 +1,121 @@
+<!DOCTYPE ISSPECS SYSTEM "https://raw.githubusercontent.com/77maxikov/db_course/master/ISSpecs.dtd">
+
+<ISSPECS>
+    <DESCRIPTION>
+        <TITLE>E-library</TITLE>
+        <SUBJ>Entertainment</SUBJ>
+    </DESCRIPTION>
+    <DATA>
+        <ENTITY ent_id="user">
+            <PROPERTY>user_id</PROPERTY>
+            <PROPERTY>login</PROPERTY>
+            <PROPERTY>password</PROPERTY>
+            <PROPERTY>name</PROPERTY>
+            <PROPERTY>birth_date</PROPERTY>
+            <PROPERTY>about</PROPERTY>
+            <PROPERTY>is_author</PROPERTY>
+            <PROPERTY>is_moder</PROPERTY>
+            <PROPERTY>author_request</PROPERTY>
+            <PROPERTY>img</PROPERTY>
+        </ENTITY>
+        <ENTITY ent_id="book">
+            <PROPERTY>book_id</PROPERTY>
+            <PROPERTY>title</PROPERTY>
+            <PROPERTY>authors</PROPERTY>
+            <PROPERTY>genre</PROPERTY>
+            <PROPERTY>publisher</PROPERTY>
+            <PROPERTY>publication_date</PROPERTY>
+            <PROPERTY>age_rating</PROPERTY>
+            <PROPERTY>language</PROPERTY>
+            <PROPERTY>description</PROPERTY>
+            <PROPERTY>pages_amount</PROPERTY>
+            <PROPERTY>file_format</PROPERTY>
+            <PROPERTY>download_link</PROPERTY>
+            <PROPERTY>approved</PROPERTY>
+            <PROPERTY>img</PROPERTY>
+            <PROPERTY>file</PROPERTY>
+        </ENTITY>
+        <ENTITY ent_id="book_reader">
+            <PROPERTY>book_id</PROPERTY>
+            <PROPERTY>user_id</PROPERTY>
+            <PROPERTY>bookmark</PROPERTY>
+        </ENTITY>
+        <ENTITY ent_id="book_author">
+            <PROPERTY>book_id</PROPERTY>
+            <PROPERTY>user_id</PROPERTY>
+        </ENTITY>
+        <ENTITY ent_id="rating">
+            <PROPERTY>book_id</PROPERTY>
+            <PROPERTY>user_id</PROPERTY>
+            <PROPERTY>rate</PROPERTY>
+        </ENTITY>
+        <ENTITY ent_id="comments">
+            <PROPERTY>comment_id</PROPERTY>
+            <PROPERTY>book_id</PROPERTY>
+            <PROPERTY>user_id</PROPERTY>
+            <PROPERTY>comment</PROPERTY>
+            <PROPERTY>time</PROPERTY>
+        </ENTITY>
+
+        <RELATIONSHIP ent_ids="book user">
+            <PROPERTY>many to many</PROPERTY>
+            <PROPERTY>through: book_reader</PROPERTY>
+        </RELATIONSHIP>
+        <RELATIONSHIP ent_ids="book user">
+            <PROPERTY>many to many</PROPERTY>
+            <PROPERTY>through: book_author</PROPERTY>
+        </RELATIONSHIP>
+        <RELATIONSHIP ent_ids="book user">
+            <PROPERTY>many to many</PROPERTY>
+            <PROPERTY>through: rating</PROPERTY>
+        </RELATIONSHIP>
+        <RELATIONSHIP ent_ids="book user">
+            <PROPERTY>many to many</PROPERTY>
+            <PROPERTY>through: comments</PROPERTY>
+        </RELATIONSHIP>
+
+        <CONSTRAINT></CONSTRAINT>
+    </DATA>
+    <ROLES>
+        <ROLE>
+            <TITLE>reader</TITLE>
+            <RESPONSIBILITY>"взятие в аренду" книг</RESPONSIBILITY>
+            <RESPONSIBILITY>скачивание книг</RESPONSIBILITY>
+            <RESPONSIBILITY>оставление закладок в арендованных книгах</RESPONSIBILITY>
+            <RESPONSIBILITY>оценивание книг</RESPONSIBILITY>
+            <RESPONSIBILITY>оставление комментариев</RESPONSIBILITY>
+            <RESPONSIBILITY>удаление своих оценок и комментариев</RESPONSIBILITY>
+            <TOTALUSERS>не ограничено</TOTALUSERS>
+        </ROLE>
+        <ROLE>
+            <TITLE>author</TITLE>
+            <RESPONSIBILITY>то же, что и reader</RESPONSIBILITY>
+            <RESPONSIBILITY>загрузка своих книг</RESPONSIBILITY>
+            <TOTALUSERS>не ограничено</TOTALUSERS>
+        </ROLE>
+        <ROLE>
+            <TITLE>moderator</TITLE>
+            <RESPONSIBILITY>то же, что и author</RESPONSIBILITY>
+            <RESPONSIBILITY>загрузка книг, находящихся в свободном доступе</RESPONSIBILITY>
+            <RESPONSIBILITY>одобрение книг, загруженных авторами</RESPONSIBILITY>
+            <RESPONSIBILITY>удаление книг</RESPONSIBILITY>
+            <RESPONSIBILITY>назначение и отстранение авторов</RESPONSIBILITY>
+            <RESPONSIBILITY>назначение других модераторов</RESPONSIBILITY>
+            <RESPONSIBILITY>удаление чужих комментариев</RESPONSIBILITY>
+            <TOTALUSERS>минимум 1</TOTALUSERS>
+        </ROLE>
+    </ROLES>
+    <TECHSPEC>
+        <DEVTOOLS>
+            <DEV>React.js</DEV>
+            <DEV>Node.js</DEV>
+            <DEV>Express</DEV>
+            <DEV>Sequelize ORM</DEV>
+        </DEVTOOLS>
+        <DBMS>
+            <TITLE>PostgreSQL</TITLE>
+			<VERSION>14</VERSION>
+			<REASONING></REASONING>
+        </DBMS>
+    </TECHSPEC>
+</ISSPECS>
