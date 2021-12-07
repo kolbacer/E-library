@@ -6,6 +6,8 @@ const {BookAuthor} = require("../models/models");
 const {BookReader} = require("../models/models");
 const {unlink} = require('fs')
 
+const checkPersonality = require('../utils/checkPersonality')
+
 class BookController {
     async create(req, res, next) {
         try{
@@ -110,6 +112,7 @@ class BookController {
     async rate(req, res) {
         try {
             const obj = req.body
+            checkPersonality(obj.user_id, req.headers.authorization.split(' ')[1])
             const rate = await Rating.create(obj)
             return res.json(rate)
         } catch (e) {
@@ -120,6 +123,7 @@ class BookController {
     async deleteRate(req, res, next) {
         try{
             const {user_id, book_id} = req.query
+            checkPersonality(user_id, req.headers.authorization.split(' ')[1])
             const response = await Rating.destroy({
                 where: {user_id, book_id}
             })
@@ -170,8 +174,9 @@ class BookController {
     }
 
     async makeRent(req, res) {
-        const {user_id, book_id} = req.body
         try {
+            const {user_id, book_id} = req.body
+            checkPersonality(user_id, req.headers.authorization.split(' ')[1])
             const rent = await BookReader.create({
                 user_id,
                 book_id,
@@ -186,6 +191,7 @@ class BookController {
     async deleteRent(req, res) {
         try{
             const {user_id, book_id} = req.query
+            checkPersonality(user_id, req.headers.authorization.split(' ')[1])
             const response = await BookReader.destroy({
                 where: {user_id, book_id}
             })
@@ -249,8 +255,9 @@ class BookController {
     }
 
     async makeAuthorship(req, res) {
-        const {user_id, book_id} = req.body
         try {
+            const {user_id, book_id} = req.body
+            checkPersonality(user_id, req.headers.authorization.split(' ')[1])
             const authorship = await BookAuthor.create({
                 user_id,
                 book_id
@@ -262,8 +269,9 @@ class BookController {
     }
 
     async makeBookmark(req, res) {
-        const {user_id, book_id, bookmark} = req.body
         try {
+            const {user_id, book_id, bookmark} = req.body
+            checkPersonality(user_id, req.headers.authorization.split(' ')[1])
             const response = await BookReader.update(
                 {bookmark},
                 {where: {user_id, book_id}})
@@ -275,6 +283,7 @@ class BookController {
 
     async getBookmark(req, res) {
         const {user_id, book_id} = req.query
+        checkPersonality(user_id, req.headers.authorization.split(' ')[1])
         const bookmark = await BookReader.findOne(
             {
                 where: {user_id, book_id},

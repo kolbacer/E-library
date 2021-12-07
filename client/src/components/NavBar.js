@@ -3,7 +3,7 @@ import {Context} from "../index";
 import Navbar from "react-bootstrap/Navbar";
 import {Nav, Container} from "react-bootstrap";
 import {NavLink, useHistory} from "react-router-dom";
-import {ADMIN_ROUTE, LOGIN_ROUTE, MAIN_ROUTE, READING_ROUTE, USER_ROUTE} from "../utils/consts";
+import {ADMIN_ROUTE, LOGIN_ROUTE, MAIN_ROUTE, USER_ROUTE} from "../utils/consts";
 import {Button} from "react-bootstrap";
 import {observer} from "mobx-react-lite";
 
@@ -23,7 +23,6 @@ const NavBar = observer(() => {
                 <NavLink style={{color: "white"}} to={MAIN_ROUTE}>E-library</NavLink>
                 {user.isAuth ?
                     <Nav className="ms-auto" style={{color: 'white'}}>
-                        {console.log(user)}
                         {user._user.is_moder &&
                         <Button
                             variant={"outline-light"}
@@ -36,7 +35,6 @@ const NavBar = observer(() => {
                             variant={"outline-light"}
                             onClick={() => {
                                 history.push(USER_ROUTE + '/' + user._user.user_id )
-                                console.log(user._user.user_id)
                             }}
                             className="ms-2"
                         >

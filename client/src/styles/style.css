@@ -1,5 +1,5 @@
 body {
-    background-image: url("http://localhost:5000/background.jpg");
+    background-image: url("../static/background.jpg");
 
     -moz-background-size: cover;
     -webkit-background-size: cover;

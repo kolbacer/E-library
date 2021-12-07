@@ -16,6 +16,8 @@ import {observer} from "mobx-react-lite";
 import ChangePassword from "../components/modals/ChangePassword";
 import CreateBook from "../components/modals/CreateBook";
 
+import default_user_pic from '../static/default_user.png';
+
 const UserPage = observer( () => {
     const {user} = useContext(Context)
 
@@ -104,7 +106,7 @@ const UserPage = observer( () => {
                     {
                         (showedUser.img)
                             ? <Image width={300} height={300} src={process.env.REACT_APP_API_URL + 'user_images/' + showedUser.img}/>
-                            : <Image width={300} height={300} src={process.env.REACT_APP_API_URL + 'default_user.png'}/>
+                            : <Image width={300} height={300} src={default_user_pic}/>
                     }
                 </Col>
                 <Col md={4} className="d-flex flex-column">

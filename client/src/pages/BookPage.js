@@ -18,6 +18,8 @@ import {MAIN_ROUTE, READING_ROUTE} from "../utils/consts";
 import {Context} from "../index";
 import Comments from "../components/book_comments/Comments";
 
+import default_book_pic from '../static/default_book.png';
+
 const BookPage = () => {
     const {user} = useContext(Context)
     const history = useHistory();
@@ -157,7 +159,7 @@ const BookPage = () => {
                     {
                         (book.img)
                             ? <Image width={300} height={300} src={process.env.REACT_APP_API_URL + 'images/' + book.img}/>
-                            : <Image width={300} height={300} src={process.env.REACT_APP_API_URL + 'default_book.png'}/>
+                            : <Image width={300} height={300} src={default_book_pic}/>
                     }
                 </Col>
                 <Col className="col-6">

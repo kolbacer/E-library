@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken')
 const {User} = require('../models/models')
 
-module.exports = function(role) {
+module.exports = function() {
     return async function (req, res, next) {
         if (req.method === "OPTIONS") {
             next()
@@ -13,8 +13,7 @@ module.exports = function(role) {
             }
             const decoded = jwt.verify(token, process.env.SECRET_KEY)
             let user = await User.findOne({where: {user_id: decoded.user_id}})
-            if (!(((role === "author") && (user.is_author)) ||
-                ((role === "moder") && (user.is_moder))))
+            if (!(user.is_moder || user.is_author))
             {
                 return res.status(403).json({message: "Нет доступа"})
             }

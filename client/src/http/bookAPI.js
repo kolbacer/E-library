@@ -22,7 +22,7 @@ export const fetchByAttribute = async (attribute, text, page, limit) => {
 }
 
 export const fetchOneBook = async (id) => {
-    const {data} = await $host.get('api/book/' + id)
+    const {data} = await $authHost.get('api/book/' + id)
     return data
 }
 

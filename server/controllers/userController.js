@@ -5,6 +5,8 @@ const uuid = require('uuid')
 const path = require('path')
 const jwt = require('jsonwebtoken')
 
+const checkPersonality = require('../utils/checkPersonality')
+
 const generateJwt = (user_id, login) => {
      return jwt.sign(
         {user_id, login},
@@ -234,6 +236,7 @@ class UserController {
 
     async setAuthorRequest(req, res) {
         const {user_id} = req.body
+        checkPersonality(user_id, req.headers.authorization.split(' ')[1])
         try {
             const response = await User.update(
                 {author_request: true},
@@ -258,6 +261,7 @@ class UserController {
 
     async changePassword(req, res, next) {
         const {user_id, old_password, new_password} = req.body
+        checkPersonality(user_id, req.headers.authorization.split(' ')[1])
 
         const user = await User.findOne({where: {user_id}})
         let comparePassword = bcrypt.compareSync(old_password, user.password)
