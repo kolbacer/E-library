@@ -43,7 +43,8 @@ const Reading = () => {
             <div className="d-flex flex-row justify-content-center mt-3">
                 <div className="ms-3">
                     <Document
-                        file={process.env.REACT_APP_API_URL + 'books/' + book.file}
+                        //file={process.env.REACT_APP_API_URL + 'books/' + book.file}
+                        file={'data:file;base64,' + book.filedata}  // data:file/pdf;base64,
                         onLoadSuccess={onDocumentLoadSuccess}
                     >
                         <div className="d-flex flex-row">

@@ -170,7 +170,7 @@ const BookPage = () => {
                         (<IMG width={300} height={300} src={default_book_pic}/>)
                         :
                         (imageLoaded) ?
-                            (<IMG width={300} height={300} src={process.env.REACT_APP_API_URL + 'images/' + book.img}/>)
+                            (<IMG width={300} height={300} src={'data:image;base64,' + book.imgdata} alt="Can't download picture" />)  // data:image/jpeg;base64,
                             :
                             (<div style={{"height": "300px", "width": "300px", "background": "gray", "text-align": "justify"}}>Can't download picture</div>)
                     }

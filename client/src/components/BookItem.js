@@ -28,7 +28,7 @@ const BookItem = ({book}) => {
                     (<IMG width={150} height={150} src={default_book_pic}/>)
                     :
                     (imageLoaded) ?
-                        (<IMG width={150} height={150} src={process.env.REACT_APP_API_URL + 'images/' + book.img}/>)
+                        (<IMG width={150} height={150} src={'data:image;base64,' + book.imgdata} alt="Can't download picture" />)  // data:image/jpeg;base64,
                         :
                         (<div style={{"height": "150px", "width": "150px", "background": "gray", "text-align": "justify"}}>Can't download picture</div>)
                 }

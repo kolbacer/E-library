@@ -25,6 +25,8 @@ class BookController {
                 let imgName = uuid.v4() + "." + imgFormat
                 obj.img = imgName
                 img.mv(path.resolve(__dirname, '..', 'static/images', imgName))
+
+                obj.imgdata = req.files.img.data
             }
 
             if (req.files && req.files.img) {
@@ -42,6 +44,8 @@ class BookController {
 
                 obj.download_link = path.resolve(__dirname, '..', 'static/books', fileName)
                 obj.file_format = fileFormat
+
+                obj.filedata = req.files.file.data
             }
 
             const book = await Book.create(obj).then().catch(e => {
@@ -78,6 +82,17 @@ class BookController {
             })
         }
 
+        books.rows.map(book => {
+            if (book.imgdata) {
+                const stringified_image = book.imgdata.toString('base64')
+                book['imgdata'] = stringified_image
+            }
+            if (book.filedata) {
+                const stringified_file = book.filedata.toString('base64')
+                book['filedata'] = stringified_file
+            }
+        })
+
         return res.json(books)
     }
 
@@ -93,6 +108,18 @@ class BookController {
                 limit,
                 offset
             })
+
+            books.rows.map(book => {
+                if (book.imgdata) {
+                    const stringified_image = book.imgdata.toString('base64')
+                    book['imgdata'] = stringified_image
+                }
+                if (book.filedata) {
+                    const stringified_file = book.filedata.toString('base64')
+                    book['filedata'] = stringified_file
+                }
+            })
+
             return res.json(books)
         } catch (e) {
             return res.status(520).json(e.message)
@@ -106,6 +133,16 @@ class BookController {
                 where: {book_id},
             },
         )
+
+        if (book && book.imgdata) {
+            const stringified_image = book.imgdata.toString('base64')
+            book['imgdata'] = stringified_image
+        }
+        if (book && book.filedata) {
+            const stringified_file = book.filedata.toString('base64')
+            book['filedata'] = stringified_file
+        }
+
         return res.json(book)
     }
 

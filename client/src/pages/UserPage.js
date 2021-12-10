@@ -33,7 +33,6 @@ const UserPage = observer( () => {
             setShowedUser(data)
             setAuthorCheckbox(data.is_author)
             setModerCheckbox(data.is_moder)
-            testImage(process.env.REACT_APP_API_URL + 'user_images/' + data.img)
         })
     }, [id, infoChanged])
 
@@ -98,15 +97,6 @@ const UserPage = observer( () => {
     const [passwordVisible, setPasswordVisible] = useState(false)
     const [bookVisible, setBookVisible] = useState(false)
 
-    const [imageLoaded, setImageLoaded] = useState(false)
-
-    const testImage = (URL) => {
-        let tester=new Image();
-        tester.onload = () => {setImageLoaded(true)}
-        tester.onerror = () => {setImageLoaded(false)}
-        tester.src=URL
-    }
-
     return (
         <div>
             <FindUser/>
@@ -114,12 +104,9 @@ const UserPage = observer( () => {
             <Row className="d-flex flex-row">
                 <Col md={4} className="d-flex justify-content-center">
                     {(!showedUser.img) ?
-                        (<IMG width={300} height={300} src={default_user_pic}/>)
+                        <IMG width={300} height={300} src={default_user_pic}/>
                         :
-                        (imageLoaded) ?
-                            (<IMG width={300} height={300} src={process.env.REACT_APP_API_URL + 'user_images/' + showedUser.img}/>)
-                            :
-                            (<div style={{"height": "300px", "width": "300px", "background": "gray", "text-align": "justify"}}>Can't download picture</div>)
+                        <IMG width={300} height={300} src={'data:image;base64,' + showedUser.imgdata} alt="Can't download picture" /> // data:image/jpeg;base64,
                     }
                 </Col>
                 <Col md={4} className="d-flex flex-column">
