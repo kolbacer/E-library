@@ -33,20 +33,10 @@ const BookPage = () => {
     const [rating, setRating] = useState(0)
     const [rate, setRate] = useState(0)
 
-    const [imageLoaded, setImageLoaded] = useState(false)
-
-    const testImage = (URL) => {
-        let tester=new Image();
-        tester.onload = () => {setImageLoaded(true)}
-        tester.onerror = () => {setImageLoaded(false)}
-        tester.src=URL
-    }
-
     useEffect(() => {
         fetchOneBook(id).then(data => {
             setBook(data)
             setApproved(data.approved)
-            testImage(process.env.REACT_APP_API_URL + 'images/' + data.img)
         })
 
         getRating(id).then(
@@ -166,13 +156,10 @@ const BookPage = () => {
         <div className="mt-3">
             <Row className="ms-5 me-5">
                 <Col className="col d-flex justify-content-center mt-3">
-                    {(!book.img) ?
-                        (<IMG width={300} height={300} src={default_book_pic}/>)
+                    {(!book.imgdata) ?
+                        <IMG width={300} height={300} src={default_book_pic}/>
                         :
-                        (imageLoaded) ?
-                            (<IMG width={300} height={300} src={'data:image;base64,' + book.imgdata} alt="Can't download picture" />)  // data:image/jpeg;base64,
-                            :
-                            (<div style={{"height": "300px", "width": "300px", "background": "gray", "text-align": "justify"}}>Can't download picture</div>)
+                        <IMG width={300} height={300} src={'data:image;base64,' + book.imgdata} alt="Can't download picture" />  // data:image/jpeg;base64,
                     }
                 </Col>
                 <Col className="col-6">

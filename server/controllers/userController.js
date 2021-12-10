@@ -1,12 +1,9 @@
 const ApiError = require('../error/ApiError');
 const bcrypt = require('bcrypt')
 const {Book, User} = require("../models/models");
-const uuid = require('uuid')
-const path = require('path')
 const jwt = require('jsonwebtoken')
 
 const checkPersonality = require('../utils/checkPersonality')
-const fs = require("fs");
 
 const generateJwt = (user_id, login) => {
      return jwt.sign(
@@ -32,30 +29,7 @@ class UserController {
         obj.password = hashPassword
 
         if (req.files) {
-            const {img} = req.files
-            let tempArray = img.name.split('.')
-            let imgFormat = 'jpg'
-            if (tempArray.length > 1) {
-                imgFormat = tempArray[tempArray.length - 1]
-            }
-
-
-            //console.log(req.files.img)
-            //console.log(typeof(req.files.img.data))
-            //console.log(req.files.img.data.toString())
-
-            let imgName = uuid.v4() + "." + imgFormat
-            /*fs.writeFileSync(path.resolve(__dirname, '..', 'static/user_images', 'blob-' + imgName1),
-                req.files.img.data,
-                {
-                    encoding: null,
-                });*/
-
             obj.imgdata = req.files.img.data
-
-
-            obj.img = imgName
-            img.mv(path.resolve(__dirname, '..', 'static/user_images', imgName))
         }
 
         const user = await User.create(obj)

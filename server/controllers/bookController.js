@@ -1,10 +1,7 @@
 const {Book, Rating} = require('../models/models')
 const ApiError = require('../error/ApiError')
-const uuid = require('uuid')
-const path = require('path')
 const {BookAuthor} = require("../models/models");
 const {BookReader} = require("../models/models");
-const {unlink} = require('fs')
 
 const checkPersonality = require('../utils/checkPersonality')
 
@@ -14,22 +11,10 @@ class BookController {
             const obj = req.body
 
             if (req.files && req.files.img) {
-                const {img} = req.files
-
-                let tempArray = img.name.split('.')
-                let imgFormat = 'jpg'
-                if (tempArray.length > 1) {
-                    imgFormat = tempArray[tempArray.length - 1]
-                }
-
-                let imgName = uuid.v4() + "." + imgFormat
-                obj.img = imgName
-                img.mv(path.resolve(__dirname, '..', 'static/images', imgName))
-
                 obj.imgdata = req.files.img.data
             }
 
-            if (req.files && req.files.img) {
+            if (req.files && req.files.file) {
                 const {file} = req.files
 
                 let tempArray = file.name.split('.')
@@ -38,13 +23,8 @@ class BookController {
                     fileFormat = tempArray[tempArray.length - 1]
                 }
 
-                let fileName = uuid.v4() + "." + fileFormat
-                obj.file = fileName
-                file.mv(path.resolve(__dirname, '..', 'static/books', fileName))
-
-                obj.download_link = path.resolve(__dirname, '..', 'static/books', fileName)
+                //obj.download_link = path.resolve(__dirname, '..', 'static/books', fileName)
                 obj.file_format = fileFormat
-
                 obj.filedata = req.files.file.data
             }
 
@@ -253,24 +233,6 @@ class BookController {
     async delete(req, res) {
         try{
             const {book_id} = req.query
-
-            const book = await Book.findOne({ where: {book_id} })
-
-            if (book.img) {
-                const imgName = path.resolve(__dirname, '..', 'static/images', book.img)
-                unlink(imgName, (err) => {
-                    if (err) console.log('не удалось удалить картинку');
-                    console.log(imgName + ' was deleted');
-                });
-            }
-
-            if (book.file) {
-                const fileName = path.resolve(__dirname, '..', 'static/books', book.file)
-                unlink(fileName, (err) => {
-                    if (err) console.log('не удалось удалить книгу');
-                    console.log(fileName + ' was deleted');
-                });
-            }
 
             const response = await Book.destroy({
                 where: {book_id}
