@@ -131,3 +131,11 @@ UNIQUE(book_id, user_id)
 SQL, javascript
 ## СУБД
 postgreSQL
+
+# Скрипты для развертывания системы
+## В папке /server/
+- `npm install` - установка зависимостей
+- `npm run dev` - запуск
+## В папке /client/
+- `npm install` - установка зависимостей
+- `npm start` - запуск
