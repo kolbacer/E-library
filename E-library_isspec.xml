@@ -106,6 +106,7 @@
         </ROLE>
     </ROLES>
     <TECHSPEC>
+        <TYPE>Interface App</TYPE>
         <DEVTOOLS>
             <DEV>React.js</DEV>
             <DEV>Node.js</DEV>
@@ -115,7 +116,12 @@
         <DBMS>
             <TITLE>PostgreSQL</TITLE>
 			<VERSION>14</VERSION>
-			<REASONING></REASONING>
+			<REASONING>
+                открытое ПО, соответствующее стандарту SQL;
+                поддержка БД неограниченного размера;
+                большое количество дополнений;
+                легкая расширяемость.
+            </REASONING>
         </DBMS>
     </TECHSPEC>
 </ISSPECS>
