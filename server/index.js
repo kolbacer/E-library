@@ -19,7 +19,6 @@ app.use('/api', router)
 // Обработка ошибок, последний Middleware
 app.use(errorHandler)
 
-
 const start = async () => {
     try {
         await sequelize.authenticate()

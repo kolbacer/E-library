@@ -11,6 +11,7 @@ const User = sequelize.define('user', {
     is_author: {type: DataTypes.BOOLEAN, allowNull: false},
     is_moder: {type: DataTypes.BOOLEAN, allowNull: false},
     author_request: {type: DataTypes.BOOLEAN, allowNull: true},
+    img: {type: DataTypes.STRING, allowNull: true},
     imgdata: {type: DataTypes.BLOB('long'), allowNull: true}
 }, {
     freezeTableName: true,

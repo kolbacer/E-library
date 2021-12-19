@@ -4,8 +4,7 @@ const userController = require('../controllers/userController')
 const authMiddleware = require('../middleware/authMiddleware')
 const checkRole = require("../middleware/checkRoleMiddleware");
 
-router.post('/registration', userController.registration)
-router.post('/login', userController.login)
+router.get('/login_or_reg', authMiddleware, userController.loginOrRegistration)
 router.get('/auth', authMiddleware, userController.check)
 // router.post('/getbylogin', userController.findByLogin)
 router.post('/getbyid', authMiddleware, userController.findById)

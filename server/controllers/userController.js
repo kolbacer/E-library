@@ -1,63 +1,49 @@
 const ApiError = require('../error/ApiError');
 const bcrypt = require('bcrypt')
 const {Book, User} = require("../models/models");
-const jwt = require('jsonwebtoken')
 
 const checkPersonality = require('../utils/checkPersonality')
-
-const generateJwt = (user_id, login) => {
-     return jwt.sign(
-        {user_id, login},
-        process.env.SECRET_KEY,
-        {expiresIn: '24h'}
-    )
-}
+const getUserInfo = require('../utils/getUserInfo')
 
 class UserController {
-    async registration(req, res, next) {
-        const {login, password} = req.body
-        if (!login || !password) {
-            return next(ApiError.badRequest('Некорректный login или password'))
+
+    async loginOrRegistration(req, res, next) {
+
+        let accessToken = req.headers.authorization.split(' ')[1]
+        let userInfo = await getUserInfo(accessToken)
+
+        let user
+        if (userInfo.email) {
+            user = await User.findOne({where: {login: userInfo.email}})
         }
-        const candidate = await User.findOne({where: {login}})
-        if (candidate) {
-            return next(ApiError.badRequest('Пользователь с таким login уже существует'))
-        }
-        const hashPassword = await bcrypt.hash(password, 5)
-
-        let obj = req.body
-        obj.password = hashPassword
-
-        if (req.files) {
-            obj.imgdata = req.files.img.data
-        }
-
-        const user = await User.create(obj)
-        const token = generateJwt(user.user_id, user.login)
-        return res.json({token})
-    }
-
-    async login(req, res, next) {
-        const {login, password} = req.body
-        const user = await User.findOne({where: {login}})
         if (!user) {
-            return next(ApiError.internal('Пользователь не найден'))
+            let obj = {
+                login: userInfo.email,
+                password: 'default',
+                name: userInfo.nickname,
+                birth_date: new Date(),
+                is_author: false,
+                is_moder: false,
+                img: userInfo.picture
+            }
+            user = await User.create(obj)
         }
-        let comparePassword = bcrypt.compareSync(password, user.password)
-        if (!comparePassword) {
-            return next(ApiError.internal('Неверный пароль'))
-        }
-        const token = generateJwt(user.user_id, user.login)
-        return res.json({token, user_id: user.user_id, is_author: user.is_author, is_moder: user.is_moder})
+
+        return res.json({user_id: user.user_id, name: user.name, is_author: user.is_author, is_moder: user.is_moder})
     }
 
     async check(req, res, next) {
-        const user = await User.findOne({where: {login: req.user.login}})
+        let accessToken = req.headers.authorization.split(' ')[1]
+        let userInfo = await getUserInfo(accessToken)
+
+        let user
+        if (userInfo.email) {
+            user = await User.findOne({where: {login: userInfo.email}})
+        }
         if (!user) {
             return next(ApiError.internal('Пользователь не найден'))
         }
-        const token = generateJwt(req.user.user_id, req.user.login)
-        return res.json({token, user_id: user.user_id, is_author: user.is_author, is_moder: user.is_moder})
+        return res.json({user_id: user.user_id, is_author: user.is_author, is_moder: user.is_moder})
     }
 
     async getAll(req, res) {
@@ -252,7 +238,7 @@ class UserController {
 
     async setAuthorRequest(req, res) {
         const {user_id} = req.body
-        checkPersonality(user_id, req.headers.authorization.split(' ')[1])
+        await checkPersonality(user_id, req.headers.authorization.split(' ')[1])
         try {
             const response = await User.update(
                 {author_request: true},
@@ -277,7 +263,7 @@ class UserController {
 
     async changePassword(req, res, next) {
         const {user_id, old_password, new_password} = req.body
-        checkPersonality(user_id, req.headers.authorization.split(' ')[1])
+        await checkPersonality(user_id, req.headers.authorization.split(' ')[1])
 
         const user = await User.findOne({where: {user_id}})
         let comparePassword = bcrypt.compareSync(old_password, user.password)

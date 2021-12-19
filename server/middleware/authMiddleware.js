@@ -1,18 +1,19 @@
-const jwt = require('jsonwebtoken')
+const jwt = require('express-jwt')
+const jwks = require('jwks-rsa')
 
-module.exports = function (req, res, next) {
-    if (req.method === "OPTIONS") {
-        next()
-    }
-    try {
-        const token = req.headers.authorization.split(' ')[1] // Bearer [token]
-        if (!token) {
-            res.status(401).json({message: "Не авторизован"})
-        }
-        const decoded = jwt.verify(token, process.env.SECRET_KEY)
-        req.user = decoded
-        next()
-    } catch(e) {
-        res.status(401).json({message: "Пользователь не авторизован"})
-    }
-};
+const domain = process.env.ISSUER_BASE_URL
+const audience = process.env.AUDIENCE
+
+const jwtCheck = jwt({
+    secret: jwks.expressJwtSecret({
+        cache: true,
+        rateLimit: true,
+        jwksRequestsPerMinute: 5,
+        jwksUri: `https://${domain}/.well-known/jwks.json`
+    }),
+    audience: audience,
+    issuer: `https://${domain}/`,
+    algorithms: ["RS256"]
+});
+
+module.exports = jwtCheck

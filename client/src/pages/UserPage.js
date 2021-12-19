@@ -103,10 +103,16 @@ const UserPage = observer( () => {
             <h2 className="d-flex justify-content-center mt-3">{showedUser.name}</h2>
             <Row className="d-flex flex-row">
                 <Col md={4} className="d-flex justify-content-center">
-                    {(!showedUser.imgdata) ?
-                        <IMG width={300} height={300} src={default_user_pic}/>
-                        :
-                        <IMG width={300} height={300} src={'data:image;base64,' + showedUser.imgdata} alt="Can't download picture" /> // data:image/jpeg;base64,
+                    {
+                        showedUser.img
+                            ? (
+                                <IMG width={300} height={300} src={showedUser.img} alt="Can't download picture" />
+                            ) : !showedUser.imgdata
+                            ? (
+                                <IMG width={300} height={300} src={default_user_pic}/>
+                            ) : (
+                                <IMG width={300} height={300} src={'data:image;base64,' + showedUser.imgdata} alt="Can't download picture" /> // data:image/jpeg;base64,
+                            )
                     }
                 </Col>
                 <Col md={4} className="d-flex flex-column">

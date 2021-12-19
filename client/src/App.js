@@ -6,10 +6,12 @@ import {observer} from "mobx-react-lite";
 import {Context} from "./index";
 import {check, fetchReaderBooks} from "./http/userAPI";
 import {Spinner} from "react-bootstrap";
+import {useAuth0} from "@auth0/auth0-react";
 
 const App = observer(() => {
     const {user} = useContext(Context)
     const [loading, setLoading] = useState(true)
+    const { isLoading } = useAuth0();
 
     useEffect(() => {
         check().then(data => {
@@ -27,7 +29,19 @@ const App = observer(() => {
     }, [])
 
     if (loading) {
-        return <Spinner animation={"grow"}/>
+        return (
+            <div className="d-flex justify-content-center mt-5">
+                <Spinner animation={"grow"}/>
+            </div>
+        );
+    }
+
+    if (isLoading) {
+        return (
+            <div className="d-flex justify-content-center mt-5">
+                <Spinner animation={"grow"}/>
+            </div>
+        );
     }
 
     return (

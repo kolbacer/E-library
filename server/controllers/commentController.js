@@ -9,7 +9,7 @@ class commentController {
     async create(req, res, next) {
         try{
             const obj = req.body
-            checkPersonality(obj.user_id, req.headers.authorization.split(' ')[1])
+            await checkPersonality(obj.user_id, req.headers.authorization.split(' ')[1])
 
             const comment = await Comments.create(obj)
             return res.json(comment)
