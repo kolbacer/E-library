@@ -11,7 +11,7 @@
 
 Книги хранятся на сервере.
 
-Тестовое приложение запущено на https://e-library-study-frontend.herokuapp.com/
+Тестовое приложение запущено на https://e-library-docker-frontend.herokuapp.com/
 
 ## Наименование
 E-library
