@@ -46,6 +46,30 @@ class UserController {
         return res.json({user_id: user.user_id, is_author: user.is_author, is_moder: user.is_moder})
     }
 
+    async update(req, res, next) {
+        try{
+            const obj = req.body
+            const user_id = obj.user_id
+            delete obj.user_id
+
+            await checkPersonality(user_id, req.headers.authorization.split(' ')[1])
+
+            if (req.files && req.files.img) {
+                obj.img = null
+                obj.imgdata = req.files.img.data
+            }
+
+            const response = await User.update(
+                obj,
+                {where: {user_id}})
+
+            return res.json(response)
+        } catch (e) {
+            console.log(e)
+            next(ApiError.badRequest(e.message))
+        }
+    }
+
     async getAll(req, res) {
         let {title, limit, page} = req.query
         page = page || 1
@@ -259,29 +283,6 @@ class UserController {
         } catch (e) {
             return res.status(520).json(e.message)
         }
-    }
-
-    async changePassword(req, res, next) {
-        const {user_id, old_password, new_password} = req.body
-        await checkPersonality(user_id, req.headers.authorization.split(' ')[1])
-
-        const user = await User.findOne({where: {user_id}})
-        let comparePassword = bcrypt.compareSync(old_password, user.password)
-        if (!comparePassword) {
-            return next(ApiError.internal('Неверный старый пароль'))
-        }
-
-        if (!new_password) {
-            return next(ApiError.badRequest('Некорректный новый пароль'))
-        }
-        const hashPassword = await bcrypt.hash(new_password, 5)
-
-        const response = await User.update(
-            {password: hashPassword},
-            {where: {user_id}})
-
-        const token = generateJwt(user.user_id, user.login)
-        return res.json({token})
     }
 
     async getAuthorRequests(req, res) {

@@ -13,7 +13,7 @@ import {Context} from "../index";
 import { useHistory } from "react-router-dom";
 import FindUser from "../components/FindUser";
 import {observer} from "mobx-react-lite";
-import ChangePassword from "../components/modals/ChangePassword";
+import UpdateUser from "../components/modals/UpdateUser";
 import CreateBook from "../components/modals/CreateBook";
 
 import default_user_pic from '../static/default_user.png';
@@ -94,7 +94,7 @@ const UserPage = observer( () => {
         })
     }
 
-    const [passwordVisible, setPasswordVisible] = useState(false)
+    const [updateVisible, setUpdateVisible] = useState(false)
     const [bookVisible, setBookVisible] = useState(false)
 
     return (
@@ -169,9 +169,9 @@ const UserPage = observer( () => {
                             </div>
                             <span
                                 style={{color: "red", 'font-family': 'Arial, sans-serif', 'font-size': '18pt', 'text-decoration': 'underline', 'cursor': 'pointer'}}
-                                onClick={() => {setPasswordVisible(true)}}
+                                onClick={() => {setUpdateVisible(true)}}
                             >
-                                Сменить пароль
+                                Редактировать профиль
                             </span>
                         </div>
                     }
@@ -283,7 +283,7 @@ const UserPage = observer( () => {
                     </Col>
                 </Row>
             }
-            <ChangePassword show={passwordVisible} onHide={() => setPasswordVisible(false)}/>
+            <UpdateUser show={updateVisible} onHide={() => setUpdateVisible(false)} confirmed={() => setInfoChanged(!infoChanged)} user_birth_date={showedUser.birth_date}/>
             <CreateBook show={bookVisible} onHide={() => setBookVisible(false)} username={showedUser.name}/>
         </div>
     );

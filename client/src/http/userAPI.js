@@ -10,6 +10,11 @@ export const check = async () => {
     return data
 }
 
+export const updateUser = async (user) => {
+    const {data} = await $authHost.put('api/user/update',user)
+    return data
+}
+
 export const fetchUsers = async (page, limit = 5) => {
     const {data} = await $authHost.get('api/user', {params: {
             page,limit
@@ -72,11 +77,6 @@ export const makeAuthorRequest = async (user_id) => {
 
 export const rejectAuthorRequest = async (user_id) => {
     const {data} = await $authHost.put('api/user/rejectauthor', {user_id})
-    return data
-}
-
-export const changePassword = async (user_id, old_password, new_password) => {
-    const {data} = await $authHost.put('api/user/changepassword', {user_id, old_password, new_password})
     return data
 }
 
