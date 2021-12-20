@@ -19,7 +19,6 @@ class UserController {
         if (!user) {
             let obj = {
                 login: userInfo.email,
-                password: 'default',
                 name: userInfo.nickname,
                 birth_date: new Date(),
                 is_author: false,

@@ -30,7 +30,6 @@ const CreateBook = observer(({show, onHide, username}) => {
     const [authorCheckbox, setAuthorCheckbox] = useState(user._user.is_author)
     useEffect(() => {
         setAuthorCheckbox(user._user.is_author)
-        console.log(username)
         if (username) {setAuthors(username)}
     }, [show]);
 

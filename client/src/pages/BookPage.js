@@ -1,12 +1,12 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {Image as IMG, Col, Row, Button} from "react-bootstrap";
+import {Image as IMG, Col, Row, Button, Spinner} from "react-bootstrap";
 import {Link, useHistory, useParams} from 'react-router-dom'
 import {
     approveBook,
     checkRent,
     deleteBook,
     deleteRate,
-    deleteRent,
+    deleteRent, fetchBookInfo,
     fetchOneBook,
     getRate,
     getRating,
@@ -33,11 +33,16 @@ const BookPage = () => {
     const [rating, setRating] = useState(0)
     const [rate, setRate] = useState(0)
 
+    const [loading, setLoading] = useState(true)
+    const [downloading, setDownloading] = useState(false)
+
     useEffect(() => {
-        fetchOneBook(id).then(data => {
+        fetchBookInfo(id).then(data => {
             setBook(data)
             setApproved(data.approved)
-        })
+        }).catch(e => {
+            alert(e.message)
+        }).finally(() => setLoading(false))
 
         getRating(id).then(
             data => {
@@ -152,6 +157,39 @@ const BookPage = () => {
         'margin-left': '5px'
     }
 
+    const downloadBook = () => {
+        setDownloading(true)
+
+        fetchOneBook(id).then(data => {
+            const contentType = 'application/pdf'
+            const base64Data = data.filedata
+            const fileName = data.book_id + '.' + data.file_format
+
+            const linkSource = `data:${contentType};base64,${base64Data}`;
+            const downloadLink = document.createElement("a");
+            downloadLink.href = linkSource;
+            downloadLink.download = fileName;
+            downloadLink.click();
+        }).catch(e => {
+            alert(e.message)
+        }).finally(() => setDownloading(false))
+    }
+
+    if (loading) {
+        return (
+            <div className="d-flex justify-content-center mt-5">
+                <div className="d-flex flex-column">
+                    <div
+                        style={{color: "blue", 'font-family': 'Arial, sans-serif', 'font-size': '18pt'}}
+                    >
+                        Книга грузится!
+                    </div>
+                    <Spinner className="ms-5 mt-2" animation={"grow"}/>
+                </div>
+            </div>
+        )
+    }
+
     return (
         <div className="mt-3">
             <Row className="ms-5 me-5">
@@ -246,22 +284,26 @@ const BookPage = () => {
                     }
                     {
                         (approved || user._user.is_moder) &&
-                        <div className="d-flex flex-row">
-                        <span
-                            style={{color: "blue", 'font-family': 'Arial, sans-serif', 'font-size': '18pt', 'text-decoration': 'underline', 'cursor': 'pointer'}}
-                            onClick={() => {
-                                if (book.download_link) {
-                                    window.open(process.env.REACT_APP_API_URL + 'books/' + book.file, '_blank').focus();
-                                } else {
-                                    alert('Нет ссылки для скачивания')
-                                }
-                            }}
-                        >
-                            Скачать:
-                        </span>
-                            <span style={bookInfo2} className="ms-1">(формат: {book.file_format})</span>
-                        </div>
-
+                        <>
+                            {downloading ? (
+                                <div className="d-flex justify-content-center">
+                                    <Spinner className="ms-5 mt-2 me-1" animation={"grow"}/>
+                                    <div style={{color: "blue", 'font-family': 'Arial, sans-serif', 'font-size': '18pt'}}>
+                                        Загрузка...
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className="d-flex flex-row">
+                                    <span
+                                        style={{color: "blue", 'font-family': 'Arial, sans-serif', 'font-size': '18pt', 'text-decoration': 'underline', 'cursor': 'pointer'}}
+                                        onClick={() => downloadBook()}
+                                    >
+                                        Скачать:
+                                    </span>
+                                    <span style={bookInfo2} className="ms-1">(формат: {book.file_format})</span>
+                                </div>
+                            )}
+                        </>
                     }
                     {
                         !approved && !user._user.is_moder &&

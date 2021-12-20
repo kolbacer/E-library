@@ -2,7 +2,7 @@ import React, {useContext, useEffect, useState} from 'react';
 import { Document, Page, pdfjs } from "react-pdf";
 import {useParams} from "react-router-dom";
 import {fetchOneBook, getBookmark, setBookmark} from "../http/bookAPI";
-import {Button, OverlayTrigger, Tooltip} from "react-bootstrap";
+import {Button, OverlayTrigger, Spinner, Tooltip} from "react-bootstrap";
 import {Context} from "../index";
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
@@ -10,11 +10,15 @@ const Reading = () => {
     const {user} = useContext(Context)
 
     const [book, setBook] = useState({})
+    const [loading, setLoading] = useState(true)
     const {id} = useParams()
     useEffect(() => {
         fetchOneBook(id).then(data => {
             setBook(data)
-        })
+        }).catch(e => {
+            alert(e.message)
+        }).finally(() => setLoading(false))
+
         getBookmark(user._user.user_id, id).then(data => {
             if (data && data.bookmark) {
                 setPageNumber(data.bookmark)
@@ -36,6 +40,21 @@ const Reading = () => {
         }).catch(e => {
             alert(e.response.data.message)
         })
+    }
+
+    if (loading) {
+        return (
+            <div className="d-flex justify-content-center mt-5">
+                <div className="d-flex flex-column">
+                    <div
+                        style={{color: "blue", 'font-family': 'Arial, sans-serif', 'font-size': '18pt'}}
+                    >
+                        Книга грузится!
+                    </div>
+                    <Spinner className="ms-5 mt-2" animation={"grow"}/>
+                </div>
+            </div>
+        )
     }
 
     return (

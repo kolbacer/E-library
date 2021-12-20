@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {Button, Col, Dropdown, Form, Image as IMG, Row} from 'react-bootstrap';
+import {Button, Col, Dropdown, Form, Image as IMG, Row, Spinner} from 'react-bootstrap';
 import {useParams} from "react-router-dom";
 import {BOOK_ROUTE} from "../utils/consts";
 import {
@@ -27,13 +27,20 @@ const UserPage = observer( () => {
     const [authorCheckbox, setAuthorCheckbox] = useState(false)
     const [moderCheckbox, setModerCheckbox] = useState(false)
 
+    const [loading, setLoading] = useState(true)
+
     let {id} = useParams()
     useEffect(() => {
+        setLoading(true)
+
         fetchOneUser(id).then(data => {
             setShowedUser(data)
             setAuthorCheckbox(data.is_author)
             setModerCheckbox(data.is_moder)
-        })
+        }).catch(e => {
+            alert(e.message)
+        }).finally(() => setLoading(false))
+
     }, [id, infoChanged])
 
     const history = useHistory();
@@ -96,6 +103,21 @@ const UserPage = observer( () => {
 
     const [updateVisible, setUpdateVisible] = useState(false)
     const [bookVisible, setBookVisible] = useState(false)
+
+    if (loading) {
+        return (
+            <div className="d-flex justify-content-center mt-5">
+                <div className="d-flex flex-column">
+                    <div
+                        style={{color: "blue", 'font-family': 'Arial, sans-serif', 'font-size': '18pt'}}
+                    >
+                        Профиль грузится!
+                    </div>
+                    <Spinner className="ms-5 mt-2" animation={"grow"}/>
+                </div>
+            </div>
+        )
+    }
 
     return (
         <div>

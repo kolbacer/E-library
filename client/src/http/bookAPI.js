@@ -26,6 +26,11 @@ export const fetchOneBook = async (id) => {
     return data
 }
 
+export const fetchBookInfo = async (id) => {
+    const {data} = await $authHost.get('api/book/info',{params: {id}})
+    return data
+}
+
 export const makeRate = async (rate) => {
     const {data} = await $authHost.post('api/book/rate', rate)
     return data

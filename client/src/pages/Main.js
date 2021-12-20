@@ -1,4 +1,4 @@
-import React, {useContext, useEffect} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import BookList from "../components/BookList";
 import {observer} from "mobx-react-lite";
 import {Context} from "../index";
@@ -8,11 +8,13 @@ import FindBook from "../components/FindBook";
 import '../styles/style.css';
 import {useAuth0} from "@auth0/auth0-react";
 import {fetchReaderBooks, login_or_registration} from "../http/userAPI";
+import {Spinner} from "react-bootstrap";
 
 const Main = observer(() => {
     const {user, library} = useContext(Context)
     const book_limit = 12
     const { isAuthenticated, getAccessTokenSilently } = useAuth0();
+    const [loading, setLoading] = useState(true)
 
     useEffect(async () => {
 
@@ -47,10 +49,12 @@ const Main = observer(() => {
             .catch(err => {
                 console.log("can't download books")
                 console.log(err)
-            })
+            }).finally(() => setLoading(false))
     }, [])
 
     useEffect(() => {
+        setLoading(true)
+
         if (library.filterAttribute === '') {
             fetchBooks(library.page, book_limit)
                 .then(data => {
@@ -61,7 +65,7 @@ const Main = observer(() => {
                 .catch(err => {
                     console.log("can't download books")
                     console.log(err)
-                })
+                }).finally(() => setLoading(false))
         }
         else {
             fetchByAttribute(library.filterAttribute, library.filterText, library.page, book_limit)
@@ -72,9 +76,24 @@ const Main = observer(() => {
                 })
                 .catch(e => {
                     alert(e.message)
-                })
+                }).finally(() => setLoading(false))
         }
     }, [library.page, library._filterText])
+
+    if (loading) {
+        return (
+            <div className="d-flex justify-content-center mt-5">
+                <div className="d-flex flex-column">
+                    <div
+                        style={{color: "blue", 'font-family': 'Arial, sans-serif', 'font-size': '18pt'}}
+                    >
+                        Книги грузятся!
+                    </div>
+                    <Spinner className="ms-5 mt-2" animation={"grow"}/>
+                </div>
+            </div>
+        )
+    }
 
     return (
         <div>
