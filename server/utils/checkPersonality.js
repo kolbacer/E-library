@@ -3,11 +3,18 @@ const getUserInfo = require("../utils/getUserInfo");
 
 module.exports = async function checkPersonality(user_id, token) {
     let userInfo = await getUserInfo(token)
-    if (!userInfo || !userInfo.email) {
+    if (!userInfo || !userInfo.sub) {
         throw {status: 401, message: "Пользователь не найден"}
     }
 
-    let user = await User.findOne({where: {login: userInfo.email}})
+    let login
+    if (userInfo.email) {
+        login = userInfo.email
+    } else {
+        login = userInfo.sub
+    }
+
+    let user = await User.findOne({where: {login}})
     if (!user) {
         throw {status: 401, message: "Пользователь не найден"}
     }

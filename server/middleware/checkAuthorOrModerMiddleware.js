@@ -13,11 +13,18 @@ module.exports = function() {
             }
 
             let userInfo = await getUserInfo(token)
-            if (!userInfo || !userInfo.email) {
+            if (!userInfo || !userInfo.sub) {
                 res.status(401).json({message: "Пользователь не найден"})
             }
 
-            let user = await User.findOne({where: {login: userInfo.email}})
+            let login
+            if (userInfo.email) {
+                login = userInfo.email
+            } else {
+                login = userInfo.sub
+            }
+
+            let user = await User.findOne({where: {login}})
             if (!user) {
                 res.status(401).json({message: "Пользователь не найден"})
             }

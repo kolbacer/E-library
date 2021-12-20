@@ -1,5 +1,4 @@
 const ApiError = require('../error/ApiError');
-const bcrypt = require('bcrypt')
 const {Book, User} = require("../models/models");
 
 const checkPersonality = require('../utils/checkPersonality')
@@ -12,13 +11,17 @@ class UserController {
         let accessToken = req.headers.authorization.split(' ')[1]
         let userInfo = await getUserInfo(accessToken)
 
-        let user
+        let login
         if (userInfo.email) {
-            user = await User.findOne({where: {login: userInfo.email}})
+            login = userInfo.email
+        } else {
+            login = userInfo.sub
         }
+
+        let user = await User.findOne({where: {login}})
         if (!user) {
             let obj = {
-                login: userInfo.email,
+                login: login,
                 name: userInfo.nickname,
                 birth_date: new Date(),
                 is_author: false,
@@ -35,10 +38,14 @@ class UserController {
         let accessToken = req.headers.authorization.split(' ')[1]
         let userInfo = await getUserInfo(accessToken)
 
-        let user
+        let login
         if (userInfo.email) {
-            user = await User.findOne({where: {login: userInfo.email}})
+            login = userInfo.email
+        } else {
+            login = userInfo.sub
         }
+
+        let user = await User.findOne({where: {login}})
         if (!user) {
             return next(ApiError.internal('Пользователь не найден'))
         }
