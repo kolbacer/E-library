@@ -1,0 +1,68 @@
+services:
+  client:
+    container_name: library-client
+    build:
+      context: .
+      dockerfile: ./client/Dockerfile
+    env_file:
+      - ./client/.env
+    depends_on:
+      - server
+#    ports:
+#      - "3000:3000"
+    networks:
+      - library-network
+
+  server:
+    container_name: library-server
+    build:
+      context: .
+      dockerfile: ./server/Dockerfile
+    env_file:
+      - ./server/.env
+    depends_on:
+      - db
+#    ports:
+#      - "5000:5000"
+    networks:
+      - library-network
+
+  db:
+    image: postgres:17.2
+    container_name: library-db
+    volumes:
+      - ./db/data:/var/lib/postgresql/data
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD=example_password
+      - POSTGRES_DB=e_library_db
+      - PGUSER=postgres
+#    ports:
+#      - '5430:5432'
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 1s
+      timeout: 5s
+      retries: 10
+    networks:
+      - library-network
+
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: library-nginx
+    depends_on:
+      - client
+      - server
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/ssl/:/etc/nginx/ssl/:ro
+    networks:
+      - library-network
+
+networks:
+  library-network:
+    driver: bridge
+    name: library

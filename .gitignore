@@ -1,0 +1,32 @@
+# project
+.idea
+/db/
+
+# client
+# dependencies
+client/node_modules
+client/.pnp
+client/.pnp.js
+
+# testing
+client/coverage
+
+# production
+client/build
+
+# misc
+client/.DS_Store
+client/.env
+
+
+# server
+# dependencies
+server/node_modules
+
+# misc
+server/.env
+
+# data
+server/static/books
+server/static/images
+server/static/user_images
