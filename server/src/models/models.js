@@ -81,8 +81,8 @@ User.belongsToMany(Book, {through: BookAuthor, foreignKey: "user_id", as: "BookA
 Book.belongsToMany(User, {through: BookReader, foreignKey: "book_id", as: "BookReader"})
 User.belongsToMany(Book, {through: BookReader, foreignKey: "user_id", as: "BookReader"})
 
-Book.belongsToMany(User, {through: Comments, foreignKey: "book_id", as: "Comments"})
-User.belongsToMany(Book, {through: Comments, foreignKey: "user_id", as: "Comments"})
+Book.belongsToMany(User, {through: { model: Comments, unique: false }, foreignKey: "book_id", as: "Comments"})
+User.belongsToMany(Book, {through: { model: Comments, unique: false }, foreignKey: "user_id", as: "Comments"})
 
 Book.belongsToMany(User, {through: Rating, foreignKey: "book_id", as: "Rating"})
 User.belongsToMany(Book, {through: Rating, foreignKey: "user_id", as: "Rating"})
