@@ -36,45 +36,46 @@ docker compose up
 E-library
 
 ## Предметная область
-читатели, книги, авторы
+Читатели, книги, авторы
 
 # Данные
-![er diagram](./E-library.png)
+### ER-диаграмма
+![er diagram](./e_library_db_diagram.png)
 
 ### book
 | name             | type         | constraints          |
 |------------------|--------------|----------------------|
 | book_id          | UUID         | NOT NULL PRIMARY KEY |
-| title            | VARCHAR(50)  | NOT NULL             |
-| authors          | TEXT         |
-| genre            | VARCHAR(50)  | NOT NULL             |
-| publisher        | VARCHAR(50)  |
+| title            | VARCHAR(255) | NOT NULL             |
+| authors          | VARCHAR(255) |
+| genre            | VARCHAR(255) | NOT NULL             |
+| publisher        | VARCHAR(255) |
 | publication_date | DATE         | NOT NULL             |
 | age_rating       | INT          |
-| language         | VARCHAR(50)  | NOT NULL             |
+| language         | VARCHAR(255) | NOT NULL             |
 | description      | TEXT         |
 | pages_amount     | INT          |
-| file_format      | VARCHAR(50)  |
-| download_link    | VARCHAR(150) | 
+| file_format      | VARCHAR(255) |
+| download_link    | VARCHAR(255) | 
 | approved         | BOOL         | NOT NULL             |
-| img              | VARCHAR(150) |
-| file             | VARCHAR(150) |
+| imgdata          | BYTEA        |
+| filedata         | BYTEA        |
 
 ### user
 | name           | type         | constraints          |
 |----------------|--------------|----------------------|
 | user_id        | UUID         | NOT NULL PRIMARY KEY |
-| login          | VARCHAR(50)  | NOT NULL             |
-| password       | VARCHAR(50)  | NOT NULL             |
-| name           | VARCHAR(50)  | NOT NULL             |
+| login          | VARCHAR(255) | NOT NULL             |
+| name           | VARCHAR(255) | NOT NULL             |
 | birth_date     | DATE         | NOT NULL             |
 | about          | TEXT         |
 | is_author      | BOOL         | NOT NULL             |
 | is_moder       | BOOL         | NOT NULL             |
 | author_request | BOOL         |
-| img            | VARCHAR(150) |
+| img            | VARCHAR(255) |
+| imgdata        | BYTEA        |
 
-UNIQUE(login)
+`UNIQUE(login)`
 
 - `author_request` - был ли пользователем отправлен запрос на становление автором  
 
@@ -83,64 +84,68 @@ UNIQUE(login)
 
 | name     | type | constraints                                    |
 |----------|------|------------------------------------------------|
+| id       | INT  | NOT NULL PRIMARY KEY                           |
 | book_id  | UUID | NOT NULL, FOREIGN KEY(book), ON DELETE CASCADE |
 | user_id  | UUID | NOT NULL, FOREIGN KEY(user), ON DELETE CASCADE |
 | bookmark | INT  |
 
-UNIQUE(book_id, user_id)
+`UNIQUE(book_id, user_id)`
 
 ### book_author
 Определяет отношение между книгами и авторами
 
 | name    | type | constraints                                    |
 |---------|------|------------------------------------------------|
+| id      | INT  | NOT NULL PRIMARY KEY                           |
 | book_id | UUID | NOT NULL, FOREIGN KEY(book), ON DELETE CASCADE |
 | user_id | UUID | NOT NULL, FOREIGN KEY(user), ON DELETE CASCADE |
 
-UNIQUE(book_id, user_id)
+`UNIQUE(book_id, user_id)`
 
 ### rating
 Оценки к книгам
 
 | name    | type | constraints                                    |
 |---------|------|------------------------------------------------|
+| id      | INT  | NOT NULL PRIMARY KEY                           |
 | book_id | UUID | NOT NULL, FOREIGN KEY(book), ON DELETE CASCADE |
 | user_id | UUID | NOT NULL, FOREIGN KEY(user), ON DELETE CASCADE |
 | rate    | INT  | NOT NULL                                       |
 
-UNIQUE(book_id, user_id)
+`UNIQUE(book_id, user_id)`
 
-### comments
+### comment
 Комментарии к книгам
 
-| name       | type      | constraints                                    |
-|------------|-----------|------------------------------------------------|
-| comment_id | UUID      | NOT NULL PRIMARY KEY                           |
-| book_id    | UUID      | NOT NULL, FOREIGN KEY(book), ON DELETE CASCADE |
-| user_id    | UUID      | NOT NULL, FOREIGN KEY(user), ON DELETE CASCADE |
-| comment    | TEXT      | NOT NULL                                       |
-| time       | TIMESTAMP |
+| name     | type      | constraints                                    |
+|----------|-----------|------------------------------------------------|
+| id       | INT       | NOT NULL PRIMARY KEY                           |
+| book_id  | UUID      | NOT NULL, FOREIGN KEY(book), ON DELETE CASCADE |
+| user_id  | UUID      | NOT NULL, FOREIGN KEY(user), ON DELETE CASCADE |
+| comment  | TEXT      | NOT NULL                                       |
+| time     | TIMESTAMP |
 
 ## Общие ограничения целостности
 - Связь *многие-ко-многим* между таблицами `book` и `user` (`book_reader`)
 - Связь *многие-ко-многим* между таблицами `book` и `user` (`book_author`)
 - Связь *многие-ко-многим* между таблицами `book` и `user` (`rating`)
-- Связь *многие-ко-многим* между таблицами `book` и `user` (`comments`)
+- Связь *многие-ко-многим* между таблицами `book` и `user` (`comment`)
+
 # Пользовательские роли
-Читатель(кол-во: не ограничено)
+### Читатель (кол-во: не ограничено)
 - каждый пользователь по умолчанию
-- может "брать в аренду" до 3-х книг
+- может "брать в аренду" до 10 книг
 - может скачивать книги
 - может делать закладки в арендованных книгах
 - может оценивать книги
 - может оставлять комментарии
 - может удалять свои оценки и комментарии
 
-Автор(кол-во: не ограничено)
+### Автор (кол-во: не ограничено)
 - может то же, что и читатель
 - может загружать свои книги
 
-Модератор(минимум 1 человек)
+### Модератор (минимум 1 человек)
 - может то же, что и автор
 - может загружать другие книги, находящиеся в свободном доступе
 - может одобрять книги, загруженные авторами
@@ -149,14 +154,16 @@ UNIQUE(book_id, user_id)
 - может назначать и удалять других модераторов
 - может удалять чужие комментарии
 
-# UI/API
-- **UI:** React
-- **API:** Node.js (express)
+# Технологический стек
 
-# Технологии разработки
+### 1. Frontend
+- **Фреймворк:** `React` (JavaScript)
 
-## Языки программирования
-SQL, javascript
+### 2. Backend
+- **Сервер:** `Node.js`/`Express` (JavaScript)
+- **ORM:** `Sequelize`
+- **СУБД:** `PostgreSQL`
 
-## СУБД
-PostgreSQL
+### 3. Инфраструктура и безопасность
+- **Реверс-прокси:** `Nginx` (проксирование запросов к API)
+- **Аутентификация и авторизация:** `Auth0`

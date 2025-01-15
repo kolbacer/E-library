@@ -13,9 +13,7 @@ export const fetchComments = async (book_id, page = 1, limit = 2) => {
     return data
 }
 
-export const deleteComment = async (comment_id) => {
-    const {data} = await $authHost.delete('comment', {params: {
-            comment_id
-        }})
+export const deleteComment = async (id) => {
+    const {data} = await $authHost.delete('comment', {params: {id}})
     return data
 }

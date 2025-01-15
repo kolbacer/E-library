@@ -1,4 +1,4 @@
-const {Book, User, Comments} = require('../models/models')
+const {Book, User, Comment} = require('../models/models')
 const ApiError = require('../error/ApiError')
 
 const checkPersonality = require('../utils/checkPersonality')
@@ -12,7 +12,7 @@ class commentController {
             obj.time = Date.now()
             await checkPersonality(obj.user_id, req.headers.authorization.split(' ')[1])
 
-            const comment = await Comments.create(obj)
+            const comment = await Comment.create(obj)
             return res.json(comment)
         } catch (e) {
             next(ApiError.badRequest(e.message))
@@ -21,16 +21,12 @@ class commentController {
 
     async delete(req, res, next) {
         try{
-            const {comment_id} = req.query
+            const {id} = req.query
 
-            let comment = await Comments.findOne({where: {comment_id}})
+            let comment = await Comment.findOne({where: {id}})
             await checkPersonalityOrModer(comment.user_id, req.headers.authorization.split(' ')[1])
 
-            const response = await Comments.destroy({
-                where: {
-                    comment_id
-                }
-            })
+            const response = await Comment.destroy({where: {id}})
             return res.json(response)
         } catch (e) {
             next(ApiError.badRequest(e.message))
@@ -42,14 +38,14 @@ class commentController {
 
         let book_comments
         if (!limit && !page) {
-            book_comments = await Comments.findAndCountAll({
+            book_comments = await Comment.findAndCountAll({
                 where: {book_id},
                 order: [
                     ['time', 'DESC'],
                 ]
             })
         } else {
-            book_comments = await Comments.findAndCountAll({
+            book_comments = await Comment.findAndCountAll({
                 where: {book_id},
                 order: [
                     ['time', 'DESC'],
@@ -64,7 +60,7 @@ class commentController {
             let book_comment = book_comments.rows[i]
             let user = await User.findOne({where: {user_id: book_comment.user_id}})
             let comment = {
-                id: book_comment.comment_id,
+                id: book_comment.id,
                 user_id: book_comment.user_id,
                 username: user.name,
                 text: book_comment.comment,

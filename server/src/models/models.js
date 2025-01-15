@@ -39,6 +39,7 @@ const Book = sequelize.define('book', {
 })
 
 const BookAuthor = sequelize.define('book_author', {
+    id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true, allowNull: false},
     book_id: {type: DataTypes.UUID, allowNull: false, references: {model: Book, key: 'book_id'}},
     user_id: {type: DataTypes.UUID, allowNull: false, references: {model: User, key: 'user_id'}}
 }, {
@@ -47,6 +48,7 @@ const BookAuthor = sequelize.define('book_author', {
 })
 
 const BookReader = sequelize.define('book_reader', {
+    id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true, allowNull: false},
     book_id: {type: DataTypes.UUID, allowNull: false, references: {model: Book, key: 'book_id'}},
     user_id: {type: DataTypes.UUID, allowNull: false, references: {model: User, key: 'user_id'}},
     bookmark: {type: DataTypes.INTEGER, allowNull: true}
@@ -55,8 +57,8 @@ const BookReader = sequelize.define('book_reader', {
     timestamps: false
 })
 
-const Comments = sequelize.define('comments', {
-    comment_id: {type: DataTypes.UUID, primaryKey: true, defaultValue: DataTypes.UUIDV4, allowNull: false},
+const Comment = sequelize.define('comment', {
+    id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true, allowNull: false},
     book_id: {type: DataTypes.UUID, allowNull: false, references: {model: Book, key: 'book_id'}},
     user_id: {type: DataTypes.UUID, allowNull: false, references: {model: User, key: 'user_id'}},
     comment: {type: DataTypes.STRING, allowNull: false},
@@ -67,6 +69,7 @@ const Comments = sequelize.define('comments', {
 })
 
 const Rating = sequelize.define('rating', {
+    id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true, allowNull: false},
     book_id: {type: DataTypes.UUID, allowNull: false, references: {model: Book, key: 'book_id'}},
     user_id: {type: DataTypes.UUID, allowNull: false, references: {model: User, key: 'user_id'}},
     rate: {type: DataTypes.INTEGER, allowNull: false}
@@ -81,8 +84,8 @@ User.belongsToMany(Book, {through: BookAuthor, foreignKey: "user_id", as: "BookA
 Book.belongsToMany(User, {through: BookReader, foreignKey: "book_id", as: "BookReader"})
 User.belongsToMany(Book, {through: BookReader, foreignKey: "user_id", as: "BookReader"})
 
-Book.belongsToMany(User, {through: { model: Comments, unique: false }, foreignKey: "book_id", as: "Comments"})
-User.belongsToMany(Book, {through: { model: Comments, unique: false }, foreignKey: "user_id", as: "Comments"})
+Book.belongsToMany(User, {through: { model: Comment, unique: false }, foreignKey: "book_id", as: "Comment"})
+User.belongsToMany(Book, {through: { model: Comment, unique: false }, foreignKey: "user_id", as: "Comment"})
 
 Book.belongsToMany(User, {through: Rating, foreignKey: "book_id", as: "Rating"})
 User.belongsToMany(Book, {through: Rating, foreignKey: "user_id", as: "Rating"})
@@ -92,6 +95,6 @@ module.exports = {
     Book,
     BookAuthor,
     BookReader,
-    Comments,
+    Comment,
     Rating,
 }

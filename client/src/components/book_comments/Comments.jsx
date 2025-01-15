@@ -36,7 +36,7 @@ function Comments({book_id}) {
         setPosts([])
         setLimit(2)
         setPage(1)
-        fetchPosts(limit, page)
+        // fetchPosts(limit, page)
     },[created])
 
     useEffect(() => {
