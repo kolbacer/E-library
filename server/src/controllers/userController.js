@@ -10,6 +10,9 @@ class UserController {
 
         let accessToken = req.headers.authorization.split(' ')[1]
         let userInfo = await getUserInfo(accessToken)
+        if (!userInfo || !userInfo.sub) {
+            return res.status(401).json({message: "Пользователь не найден"})
+        }
 
         let login
         if (userInfo.email) {
@@ -37,6 +40,9 @@ class UserController {
     async check(req, res, next) {
         let accessToken = req.headers.authorization.split(' ')[1]
         let userInfo = await getUserInfo(accessToken)
+        if (!userInfo || !userInfo.sub) {
+            return res.status(401).json({message: "Пользователь не найден"})
+        }
 
         let login
         if (userInfo.email) {

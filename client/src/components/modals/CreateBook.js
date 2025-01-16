@@ -120,6 +120,7 @@ const CreateBook = observer(({show, onHide, username}) => {
                         value={ageRating}
                         onChange={e => setAgeRating(e.target.value)}
                         className="mt-3"
+                        type="number"
                         placeholder="Введите возрастной рейтинг"
                     />
                     <Form.Control
@@ -133,6 +134,7 @@ const CreateBook = observer(({show, onHide, username}) => {
                         value={description}
                         onChange={e => setDescription(e.target.value)}
                         className="mt-3"
+                        maxLength="255"
                         placeholder="Описание"
                     />
                     <Form.Control
@@ -140,6 +142,7 @@ const CreateBook = observer(({show, onHide, username}) => {
                         onChange={e => setPagesAmount(e.target.value)}
                         className="mt-3"
                         style={{"width": "30%"}}
+                        type="number"
                         placeholder="Количество страниц"
                     />
 
