@@ -11,37 +11,31 @@ function Comments({book_id}) {
     const {user} = useContext(Context)
     const [posts, setPosts] = useState([])
 
-    const [totalPages, setTotalPages] = useState(0);
-    const [limit, setLimit] = useState(2);
-    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(0)
+    const [pageState, setPageState] = useState({page: 1, limit: 2, created: false})
     const lastElement = useRef()
 
-    const [created, setCreated] = useState(0)
     const [comment, setComment] = useState('')
 
-    const [fetchPosts, isPostsLoading, postError] = useFetching(async (limit, page) => {
-        const response = await fetchComments(book_id, page, limit);
-        console.log(response)
-        setPosts([...posts, ...response.rows])
+    const [fetchPosts, isPostsLoading, postError] = useFetching(async (limit, page, created) => {
+        const response = await fetchComments(book_id, page, limit)
+        const resultPosts = created ? response.rows : [...posts, ...response.rows]
+        setPosts(resultPosts)
         const totalCount = response.count
-        console.log(totalCount)
         setTotalPages(getPageCount(totalCount, limit));
     })
 
-    useObserver(lastElement, page < totalPages, isPostsLoading, () => {
-        setPage(page + 1);
+    useObserver(lastElement, pageState.page < totalPages, isPostsLoading, () => {
+        setPageState({
+            page: pageState.page + 1,
+            limit: pageState.limit,
+            created: false
+        });
     })
 
     useEffect(() => {
-        setPosts([])
-        setLimit(2)
-        setPage(1)
-        // fetchPosts(limit, page)
-    },[created])
-
-    useEffect(() => {
-        fetchPosts(limit, page)
-    }, [page, limit])
+        fetchPosts(pageState.limit, pageState.page, pageState.created)
+    }, [pageState])
 
     const removePost = (post) => {
         setPosts(posts.filter(p => p.id !== post.id))
@@ -54,7 +48,7 @@ function Comments({book_id}) {
         formData.append('user_id', user._user.user_id)
         formData.append('comment', comment)
         createComment(formData).then(data => {
-            setCreated(created+1)
+            setPageState({page: 1, limit: 2, created: true})
             setComment('')
         }).catch(err => {
             console.error(err);

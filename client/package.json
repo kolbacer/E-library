@@ -12,6 +12,7 @@
   "dependencies": {
     "@auth0/auth0-react": "^2.2.0",
     "axios": "^1.7.9",
+    "bootstrap": "^5.3.3",
     "date-fns": "^2.26.0",
     "mobx": "^6.3.6",
     "mobx-react-lite": "^3.2.2",
