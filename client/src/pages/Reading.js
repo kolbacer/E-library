@@ -71,16 +71,21 @@ const Reading = () => {
                                 pageNumber={pageNumber}
                                 className="border border-2 border-primary rounded p-3 bg-light"
                             />
-                            <Page
-                                pageNumber={pageNumber+1}
-                                className="border border-2 border-primary rounded p-3 bg-light"
-                            />
+                            {pageNumber < numPages &&
+                                <Page
+                                    pageNumber={pageNumber+1}
+                                    className="border border-2 border-primary rounded p-3 bg-light"
+                                />
+                            }
                         </div>
                     </Document>
-                    <div className="d-flex flex-row justify-content-center mt-3">
-                        <Button onClick={() => {setPageNumber(pageNumber-1)}} className="me-3">Назад</Button>
-                        <p>Страница {pageNumber} из {numPages}</p>
-                        <Button onClick={() => {setPageNumber(pageNumber+1)}} className="ms-3">Вперед</Button>
+                    <div className="d-flex flex-row justify-content-center align-items-center mt-3">
+                        <Button disabled={pageNumber <= 1} onClick={() => {setPageNumber(pageNumber-2)}} className="me-3">Назад</Button>
+                        {pageNumber === numPages ?
+                            <p className="m-0 text-center">Страница {pageNumber} из {numPages}</p> :
+                            <p className="m-0 text-center">Страницы {pageNumber}-{pageNumber+1} из {numPages}</p>
+                        }
+                        <Button disabled={pageNumber >= numPages-1} onClick={() => {setPageNumber(pageNumber+2)}} className="ms-3">Вперед</Button>
                     </div>
                 </div>
                 <div className="ms-3 mt-3">
